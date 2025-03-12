@@ -52,5 +52,5 @@ spec:
       input:
         allowedHosts: ['github.com']
         description: "A React User Picker component generated using Backstage."
-        repoUrl: https://github.com/dipakmca09/${{ parameters.repoName }}
+        repoUrl: github.com?owner=dipakmca09&repo=${{ parameters.repoName }}
         defaultBranch: main
