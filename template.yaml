@@ -1,67 +1,56 @@
 apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
-# some metadata about the template itself
 metadata:
-  name: v1beta3-demo
-  title: Store Team Template
-  description: scaffolder v1beta3 template demo
+  name: react-user-picker
+  title: React User Picker Component
+  description: A template for creating a React User Picker component and publishing it to a new GitHub repository.
 spec:
-  owner: backstage/techdocs-core
+  owner: dipakmca09
   type: service
 
-  # these are the steps which are rendered in the frontend with the form input
   parameters:
-    - title: Fill in some steps
+    - title: Component Details
       required:
-        - name
+        - componentName
+        - userOptions
       properties:
-        name:
-          title: Name
+        componentName:
+          title: Component Name
           type: string
-          description: Unique name of the component
+          description: The name of the React component (e.g., UserPicker).
           ui:autofocus: true
-          ui:options:
-            rows: 5
-    - title: Choose a location
-      required:
-        - repoUrl
-      properties:
-        repoUrl:
-          title: Repository Location
-          type: string
-          ui:field: RepoUrlPicker
-          ui:options:
-            allowedHosts:
-              - github.com
 
-  # here's the steps that are executed in series in the scaffolder backend
+        userOptions:
+          title: User Options
+          type: string
+          description: Enter comma-separated options for the User Picker component (e.g., "Alice,Bob,Charlie").
+          ui:options:
+            rows: 3
+
+    - title: Repository Details
+      required:
+        - repoName
+      properties:
+        repoName:
+          title: New Repository Name
+          type: string
+          description: The name of the new GitHub repository where the component will be published.
+
   steps:
-    - id: fetch-base
-      name: Fetch Base
+    - id: fetch-template
+      name: Fetch Template
       action: fetch:template
       input:
-        url: ./
+        url: https://github.com/dipakmca09/software-templates
         values:
-          name: ${{ parameters.name }}
-
-    - id: fetch-docs
-      name: Fetch Docs
-      action: fetch:plain
-      input:
-        targetPath: ./community
-        url: https://github.com/backstage/community/tree/main/backstage-community-sessions
+          componentName: ${{ parameters.componentName }}
+          userOptions: ${{ parameters.userOptions }}
 
     - id: publish
       name: Publish
       action: publish:github
       input:
         allowedHosts: ['github.com']
-        description: This is ${{ parameters.name }}
-        repoUrl: https://github.com/dipakmca09/software-templates
-
-    - id: register
-      name: Register
-      action: catalog:register
-      input:
-        repoContentsUrl: ${{ steps['publish'].output.repoContentsUrl }}
-        catalogInfoPath: '/catalog-info.yaml'
+        description: "A React User Picker component generated using Backstage."
+        repoUrl: https://github.com/dipakmca09/${{ parameters.repoName }}
+        defaultBranch: main
